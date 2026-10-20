@@ -2418,7 +2418,7 @@ function openLogin(){if($(".onboard"))return;
   function step1(){sheet.textContent="";sheet.appendChild(el("div",{cls:"ob-q",text:"LOGIN"}));sheet.appendChild(el("h2",{cls:"ob-h",text:"로그인할 계정 유형을 선택해 주세요"}));
     var cards=el("div",{cls:"lg-cards"});AUD.forEach(function(a){var c=el("button",{cls:"lg-card",type:"button"});var ban=el("span",{cls:"lg-ban",style:"background:"+ACCT_COLOR[a.id]});ban.innerHTML=svgI(ACCT_ICON[a.id]);
       c.appendChild(ban);c.appendChild(el("b",{text:ACCT_LOGIN[a.id][0]}));c.appendChild(el("small",{text:ACCT_LOGIN[a.id][1]}));c.onclick=function(){step2(a.id)};cards.appendChild(c)});
-    sheet.appendChild(cards);sheet.appendChild(el("p",{cls:"lg-note",text:"비밀번호는 받지 않아요. 지금 쓰는 Claude 계정으로 본인을 확인하고, 입력한 정보는 나만 볼 수 있게 저장돼요."}));
+    sheet.appendChild(cards);sheet.appendChild(el("p",{cls:"lg-note",text:(window.claude?"비밀번호는 받지 않아요. 지금 쓰는 Claude 계정으로 본인을 확인하고, 입력한 정보는 나만 볼 수 있게 저장돼요.":"비밀번호는 받지 않아요. 입력한 정보는 이 기기의 브라우저에만 저장돼요.")}));
     var f=$(".lg-card",cards);if(f)f.focus()}
   function step2(type){sheet.textContent="";var L=ACCT_LOGIN[type];
     var back=el("button",{cls:"lg-back",type:"button",text:"← 계정 유형 다시 고르기"});back.onclick=step1;
