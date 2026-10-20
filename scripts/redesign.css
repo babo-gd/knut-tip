@@ -230,3 +230,4 @@ section.panel[data-tab="food"] .mission,section.panel[data-tab="food"]>.lead{dis
 .fm-pin.low .fm-lb{margin-top:4px}
 .fm-cl{width:42px;height:42px;font-size:15px}
 @media (max-width:400px){.scr-hero .ht{font-size:24px!important}.fm-hint{display:none}}
+#foodMapBox.fm-wrap{isolation:isolate}.fm-stage{z-index:0}
