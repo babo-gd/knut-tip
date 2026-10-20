@@ -1106,6 +1106,23 @@ h1,h2,h3,.scr-hero .ht,.stop-head h2,.pop h2,.bs-head h2,.ob-h,.ob-title,.deptga
 .onboard{animation:kfade .2s}
 @media (prefers-reduced-motion:reduce){.scr-hero .hm svg,.ob-masc svg,.mascot-sm svg,.pop-bg,.bs-bg,.onboard{animation:none!important}}
 
+
+/* ===== 노선도 tab bar: a train runs to the category you pick ===== */
+.tabbar{padding-top:18px!important;--lc:#3d5cf5}
+.tb-rail{position:absolute;left:0;right:0;top:9px;height:8px;pointer-events:none}
+.tb-track,.tb-fill{position:absolute;top:3px;left:0;height:2px;border-radius:2px;background:var(--fill2)}
+.tb-fill{width:0;background:var(--lc);transition:width .5s cubic-bezier(.45,0,.2,1),background-color .3s}
+.tb-st{position:absolute;top:0;left:0;width:8px;height:8px;margin-left:-4px;border-radius:50%;background:var(--card);box-shadow:inset 0 0 0 2px var(--fill2);transition:box-shadow .3s}
+.tb-st.past{box-shadow:inset 0 0 0 2px var(--lc)}
+.tb-train{position:absolute;top:-3px;left:0;width:24px;height:14px;margin-left:-12px;border-radius:5px 9px 9px 5px;background:var(--lc);box-shadow:0 2px 6px rgba(0,0,0,.18);transition:transform .5s cubic-bezier(.45,0,.2,1),background-color .3s}
+.tb-train::before{content:"";position:absolute;top:4px;left:5px;width:4px;height:4px;border-radius:1px;background:#fff;box-shadow:6px 0 0 #fff}
+.tb-train.rev{border-radius:9px 5px 5px 9px}
+.tb-train.rev::before{left:9px}
+.tb-rail.still .tb-fill,.tb-rail.still .tb-train{transition:none!important}
+.tabbar button[aria-current="page"]{color:var(--lc)!important}
+.tabbar button[aria-current="page"] svg{background:color-mix(in srgb,var(--lc) 13%,transparent)!important}
+@media (prefers-reduced-motion:reduce){.tb-fill,.tb-train{transition:none!important}}
+
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 
@@ -2691,6 +2708,23 @@ var _renderAud2=renderAud;renderAud=function(){_renderAud2();$$("#audLinks small
 /* ---------- calm motion (like 가치관 소개팅): short fades, no overshoot, no cascade ---------- */
 stagger=function(nodes){if(RM)return;nodes.slice(0,8).forEach(function(n,i){n.animate([{opacity:0},{opacity:1}],{duration:200,delay:i*20,easing:"ease-out",fill:"backwards"})})};
 pushIn=function(node,dir){if(RM||!node)return;node.animate([{opacity:0,transform:"translateX("+(dir||1)*10+"px)"},{opacity:1,transform:"none"}],{duration:220,easing:"cubic-bezier(.2,.8,.2,1)"})};
+
+/* ---------- 노선도 tab bar: a train runs to the category you pick ---------- */
+var LINE_C={home:"#3d5cf5",food:"#ff6b5e",move:"#7a55e8",life:"#21b19d",study:"#e8960c",career:"#1696d6"};
+(function(){var tb=$("#tabbar");if(!tb)return;
+  var rail=el("div",{cls:"tb-rail still","aria-hidden":"true"}),track=el("i",{cls:"tb-track"}),fill=el("i",{cls:"tb-fill"}),train=el("i",{cls:"tb-train"}),dots={};
+  rail.appendChild(track);rail.appendChild(fill);$$("button",tb).forEach(function(b){var d=el("i",{cls:"tb-st"});dots[b.dataset.tab]=d;rail.appendChild(d)});rail.appendChild(train);tb.insertBefore(rail,tb.firstChild);
+  var lastX=null;
+  function place(){var bs=$$("button",tb);if(!bs.length)return;var cur=$('button[aria-current="page"]',tb)||bs[0];var tr=tb.getBoundingClientRect();if(!tr.width)return;
+    function cx(b){var r=b.getBoundingClientRect();return r.left-tr.left+r.width/2}
+    var x0=cx(bs[0]),x1=cx(bs[bs.length-1]),x=cx(cur);
+    track.style.left=fill.style.left=x0+"px";track.style.width=(x1-x0)+"px";fill.style.width=Math.max(0,x-x0)+"px";
+    bs.forEach(function(b){var d=dots[b.dataset.tab];d.style.left=cx(b)+"px";d.classList.toggle("past",cx(b)<=x)});
+    if(lastX!=null&&x!==lastX)train.classList.toggle("rev",x<lastX);
+    train.style.transform="translateX("+x+"px)";tb.style.setProperty("--lc",LINE_C[cur.dataset.tab]||"#3d5cf5");lastX=x;
+    if(rail.classList.contains("still")){void rail.offsetWidth;requestAnimationFrame(function(){rail.classList.remove("still")})}}
+  var _syncTB=syncTabbar;syncTabbar=function(id){_syncTB(id);place()};
+  if(window.ResizeObserver)new ResizeObserver(place).observe(tb);window.addEventListener("resize",place);place()})();
 /* ---------- connect db ---------- */
 function setFormsEnabled(on){$$("#asForm button,#tipForm button,#dlForm button,#plForm button,#alForm button,#lvForm button[type=submit]").forEach(function(b){b.disabled=!on})}
 setFormsEnabled(false);
