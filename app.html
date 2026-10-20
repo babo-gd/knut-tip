@@ -2078,14 +2078,14 @@ function tipCardX(t){var tags=el("div",{cls:"tags"},[el("span",{cls:"pill rec",t
   if(usable(t.mode))tags.appendChild(el("span",{cls:"pill ok",text:t.mode}));
   if(usable(t.range))tags.appendChild(el("span",{cls:"pill",text:t.range==="학교↔시내"?"시내와 학교":t.range}));
   if(usable(t.prep))tags.appendChild(el("span",{cls:"pill price",text:"준비물: "+t.prep}));
-  var c=el("button",{cls:"card tipx",type:"button"},[el("h3",{text:t.name}),tags,el("span",{cls:"loc",text:usable(t.loc)?"위치: "+t.loc:"위치 확인 안 됨"})]);
+  var c=el("button",{cls:"card tipx",type:"button"},[el("h3",{text:t.name}),tags,usable(t.loc)?el("span",{cls:"loc",text:"위치: "+t.loc}):null]);
   c.onclick=function(e){ripple(c,e);tipPop(c,t)};tilt(c);return c}
 function tipPop(origin,t){var dl=el("dl",{cls:"fields"});
-  var mapNode=t.map?el("a",{href:t.map,target:"_blank",rel:"noopener",text:t.map.replace(/^https?:\/\//,"")}):"확인 안 됨";
-  [["이름",t.name],["위치",usable(t.loc)?t.loc:"확인 안 됨"],["지도",mapNode],["확인한 날",t.date],["추천 수",t.rec+"건"],["주제",t.topic],["이동수단",t.mode],["구간",t.range==="학교↔시내"?"시내와 학교":t.range],["준비물",t.prep]].forEach(function(r){dl.appendChild(el("dt",{text:r[0]}));dl.appendChild(el("dd",{},[r[1]]))});
+  var mu=(t.map||"").match(/^https?:\/\/[^\s(]+/);var mapNode=mu?el("a",{href:mu[0],target:"_blank",rel:"noopener",text:mu[0].replace(/^https?:\/\//,"")}):null;
+  [["이름",t.name],["위치",usable(t.loc)?t.loc:null],["지도",mapNode],["확인한 날",t.date],["추천 수",t.rec+"건"],["주제",t.topic],["이동수단",usable(t.mode)?t.mode:null],["구간",usable(t.range)?(t.range==="학교↔시내"?"시내와 학교":t.range):null],["준비물",usable(t.prep)?t.prep:null]].forEach(function(r){if(r[1]==null||r[1]==="")return;dl.appendChild(el("dt",{text:r[0]}));dl.appendChild(el("dd",{},[r[1]]))});
   var rel=XTIPS.filter(function(x){return x.id!==t.id&&x.topic===t.topic}).sort(function(a,b){return b.rec-a.rec}).slice(0,3);
   var relBox=el("div",{},[el("div",{cls:"eyebrow",text:"같은 주제의 다른 꿀팁"})].concat(rel.map(function(x){return el("div",{cls:"kv"},[el("span",{text:x.name}),el("span",{cls:"mono",text:"추천 "+x.rec})])})));
-  openPop(origin,{eyebrow:"학생 꿀팁 · "+t.topic,title:t.name,color:"var("+(t.topic==="이동"?"--l4":t.topic==="학사·장학"?"--l3":"--l2")+")",body:[dl,el("p",{cls:"note",style:"margin:0",text:"학생 21명이 낸 원본을 정리한 자료예요. 확인 안 됨 = 원본에 없는 정보, 해당 없음 = 이 꿀팁에 맞지 않는 칸."}),relBox]})}
+  openPop(origin,{eyebrow:"학생 꿀팁 · "+t.topic,title:t.name,color:"var("+(t.topic==="이동"?"--l4":t.topic==="학사·장학"?"--l3":"--l2")+")",body:[dl,el("p",{cls:"note",style:"margin:0",text:"학생 21명이 낸 원본을 정리한 자료예요. 원본에 없거나 이 꿀팁에 맞지 않는 칸은 뺐어요."}),relBox]})}
 var tipState=store("tipState")||{};
 function chipRow(box,key,opts,label){box.textContent="";var cur=tipState[key]||"전체";
   ["전체"].concat(opts).forEach(function(o){var b=el("button",{cls:"chip",type:"button","aria-pressed":String(cur===o),text:o==="전체"?label+" 전체":o});b.onclick=function(){tipState[key]=o;store("tipState",tipState);renderXTips()};box.appendChild(b)})}
