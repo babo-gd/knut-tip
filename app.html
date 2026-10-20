@@ -1123,6 +1123,24 @@ h1,h2,h3,.scr-hero .ht,.stop-head h2,.pop h2,.bs-head h2,.ob-h,.ob-title,.deptga
 .tabbar button[aria-current="page"] svg{background:color-mix(in srgb,var(--lc) 13%,transparent)!important}
 @media (prefers-reduced-motion:reduce){.tb-fill,.tb-train{transition:none!important}}
 
+
+/* ===== map card row: edge-to-edge swipe row ===== */
+.fm-cards{width:auto!important;max-width:none!important;margin:0 -18px!important;padding:12px 18px 20px!important;scroll-padding-inline:18px;gap:10px!important}
+.fm-cards::after{content:"";flex:0 0 8px}
+.fm-card{scroll-snap-align:start!important;width:82%!important;max-width:320px!important;align-self:stretch}
+.fm-listbtn{margin-top:0!important}
+
+
+/* ===== price filter chip + option sheet ===== */
+.price-chip .cv{display:inline-block;width:7px;height:7px;margin:0 2px 3px 2px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg)}
+.price-chip[aria-pressed="true"]::before{display:none!important}
+.opt-list{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.opt-row{display:flex;align-items:center;gap:12px;width:100%;min-height:54px;padding:0 16px;border:0;border-radius:16px;background:var(--fill);font:inherit;font-size:16px;font-weight:600;color:var(--t1);text-align:left;cursor:pointer;transition:background-color .15s,color .15s}
+.opt-row::before{content:"";flex:none;width:22px;height:22px;border-radius:50%;background:var(--card);box-shadow:inset 0 0 0 2px #c9ced9}
+.opt-row:active{background:var(--fill2)}
+.opt-row[aria-checked="true"]{background:var(--mint-bg);color:var(--mint-ink);font-weight:700}
+.opt-row[aria-checked="true"]::before{box-shadow:none;background:var(--mint) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 10.5l3.2 3L15 7' fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/16px no-repeat}
+
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 
@@ -1669,8 +1687,13 @@ function renderFoodControls(){
   AREAS.forEach(function(x){var b=el("button",{cls:"chip",type:"button","aria-pressed":String(area===x[0]),text:x[1]});b.onclick=function(){area=x[0];store("area",area);renderFoodControls();renderFood()};fa.appendChild(b)});
   var ff=$("#foodFilters");ff.textContent="";
   FILTERS.forEach(function(x){var b=el("button",{cls:"chip",type:"button","aria-pressed":String(!!flt[x[0]]),text:x[1]});b.onclick=function(){flt[x[0]]=!flt[x[0]];renderFoodControls();renderFood()};ff.appendChild(b)});
-  var sel=el("select",{id:"priceSel","aria-label":"가격",style:"width:auto"});PRICES.forEach(function(x){var o=el("option",{value:x[0],text:x[1]});if(x[0]===priceSel)o.selected=true;sel.appendChild(o)});
-  sel.onchange=function(){priceSel=sel.value;store("priceSel",priceSel);renderFood()};ff.insertBefore(sel,ff.firstChild)}
+  var pc=PRICES.filter(function(x){return x[0]===priceSel})[0]||PRICES[0];
+  var pb=el("button",{cls:"chip price-chip",type:"button","aria-pressed":String(priceSel!=="all"),"aria-haspopup":"dialog","aria-label":"가격대: "+pc[1]},[el("span",{text:priceSel==="all"?"가격":pc[1]}),el("i",{cls:"cv","aria-hidden":"true"})]);
+  pb.onclick=function(){var list=el("div",{cls:"opt-list",role:"radiogroup","aria-label":"가격대"});
+    PRICES.forEach(function(x){var o=el("button",{cls:"opt-row",type:"button",role:"radio","aria-checked":String(priceSel===x[0])},[el("span",{text:x[0]==="all"?"전체 가격":x[1]})]);
+      o.onclick=function(){priceSel=x[0];store("priceSel",priceSel);closePop();renderFoodControls();renderFood()};list.appendChild(o)});
+    openPop(pb,{eyebrow:"필터",title:"가격대 고르기",body:[list]})};
+  ff.insertBefore(pb,ff.firstChild)}
 
 function photoBox(p,s){var ph=[1,2].map(function(n){return photos[p.id+"-"+n]}).filter(Boolean);
   var box=el("div",{cls:"photos"+(ph.length===2?" two":"")});
