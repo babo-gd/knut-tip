@@ -1488,6 +1488,42 @@ section.panel[data-tab="home"] .scr-hero{padding-bottom:46px!important}
 .dd-tags span.due{font-variant-numeric:tabular-nums;color:color-mix(in srgb,var(--dc) 80%,#000);background:color-mix(in srgb,var(--dc) 12%,var(--card))}
 .dd-empty{padding:18px 16px;border-radius:16px;border:1.5px dashed var(--fill2);text-align:center;font-size:14px;line-height:1.55;color:var(--t3)}
 
+
+/* ===== restaurant food-type pictures ===== */
+.pa{position:relative;height:150px;border-radius:18px;overflow:hidden;display:grid;place-items:center;background:linear-gradient(135deg,var(--pa1),var(--pa2))}
+.pa::before,.pa::after{content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.18)}
+.pa::before{width:150px;height:150px;right:-40px;top:-50px}
+.pa::after{width:90px;height:90px;left:-25px;bottom:-35px}
+.pa-e{position:relative;z-index:1;font-size:74px;line-height:1;filter:drop-shadow(0 8px 12px rgba(0,0,0,.18))}
+.pa-l{position:absolute;z-index:1;left:12px;bottom:12px;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.85);color:#2a2f45;font-size:12.5px;font-weight:800}
+.fm-av.art,.pic.art{background:linear-gradient(135deg,var(--pa1),var(--pa2))!important;color:transparent;font-size:0;display:grid!important;place-items:center}
+.fm-av.art::after,.pic.art::after{content:attr(data-e);font-size:26px;line-height:1;color:initial}
+.pic.art svg{display:none}
+
+
+/* ===== 건물별 층 안내 ===== */
+.floorwrap{display:block!important;padding:16px!important;--fc:#21b19d}
+.bf-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.bf-ic{flex:none;width:46px;height:46px;border-radius:15px;display:grid;place-items:center;color:var(--fc);background:color-mix(in srgb,var(--fc) 13%,var(--card))}
+.bf-ic svg{width:24px;height:24px}
+.bf-head b{display:block;font-size:18px;font-weight:800;letter-spacing:-.02em;color:var(--t1)}
+.bf-head small{font-size:12.5px;font-weight:600;color:var(--t3)}
+.floors{display:flex!important;flex-direction:row!important;justify-content:flex-start!important;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:12px;padding:10px 12px;border-radius:16px;background:var(--fill)}
+.floors::before{content:"층";margin-right:2px;font-size:12.5px;font-weight:800;color:var(--t3)}
+.floors button{width:44px!important;height:44px!important;min-width:0!important;padding:0!important;border:0!important;border-radius:50%!important;display:grid!important;place-items:center;background:var(--card)!important;color:var(--t2)!important;font:inherit;font-size:14px!important;font-weight:800!important;box-shadow:inset 0 0 0 1.5px var(--fill2),0 1px 2px rgba(20,20,30,.06)!important;cursor:pointer;transition:background-color .15s,color .15s}
+.floors button[aria-pressed="true"]{background:var(--hero)!important;color:#fff!important;box-shadow:0 4px 10px color-mix(in srgb,var(--hero) 35%,transparent)!important}
+.floorlist{gap:0!important}
+.floorlist .fl-h{display:flex;align-items:baseline;gap:8px;margin:2px 2px 4px;font-size:15px!important;font-weight:800!important;color:var(--t1)}
+.floorlist .fl-h small{font-size:12.5px;font-weight:600;color:var(--t3)}
+.floorlist .fl-row{display:flex!important;align-items:center!important;gap:12px!important;width:100%;padding:12px 2px!important;border:0!important;border-radius:0!important;background:none!important;color:var(--t1)!important;font:inherit;text-align:left;cursor:pointer}
+.floorlist .fl-row+.fl-row{border-top:1px solid var(--fill2)!important}
+.fl-pin{flex:none;width:32px;height:32px;border-radius:11px;display:grid;place-items:center;color:var(--fc);background:color-mix(in srgb,var(--fc) 12%,var(--card))}
+.fl-pin svg{width:17px;height:17px}
+.fl-nm{flex:1;min-width:0;font-size:15px;font-weight:700;line-height:1.4}
+.fl-rec{flex:none;font-size:12px;font-weight:800;padding:3px 9px;border-radius:999px;color:color-mix(in srgb,var(--fc) 80%,#000);background:color-mix(in srgb,var(--fc) 12%,var(--card))}
+.fl-rec.top{color:#fff;background:var(--fc)}
+.fl-more{display:block;width:100%;margin-top:6px;min-height:44px;border:0;border-radius:14px;background:var(--fill);font:inherit;font-size:14px;font-weight:800;color:var(--t2);cursor:pointer}
+
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 
@@ -3472,6 +3508,49 @@ if(typeof PRESS_SMALL==="string")PRESS_SMALL+=",.tg-chip";
       var main=el("div",{cls:"dd-main"},[el("b",{text:a.course})]);if(a.section)main.appendChild(el("small",{text:a.section}));main.appendChild(tags);
       b.appendChild(el("div",{cls:"dd-card"},[el("span",{cls:"dd-badge"+(n<=2?" hot":""),text:ddayTxt(n)}),main]))})};
   $("#asSearch").oninput=renderAssigns;renderAssigns()})();
+
+/* ---------- restaurant food-type pictures ---------- */
+var PA_TYPES=[
+  ["카페·디저트","☕","#f6e3c8","#d8b48a",/카페|커피|베이커리|파리바게뜨|밀크티|브레드/],
+  ["부리또","🌯","#ffe1b8","#ffb867",/부리또|수리또/],
+  ["마라탕","🌶️","#ffd2cc","#ff8a7a",/마라/],
+  ["중식","🥟","#ffe0d0","#ff9f80",/짬뽕|반점|차이나|중화/],
+  ["버거","🍔","#ffecb8","#ffc85a",/버거|스매쉬/],
+  ["치킨·닭","🍗","#ffe6c2","#f5a95a",/치킨|통닭|닭갈비|찜닭/],
+  ["고기","🥩","#ffd9df","#f2899b",/삼겹|고기|갈비|구이|막창|곱창|돼지|바베큐|대패|돌판/],
+  ["국밥·찌개","🍲","#ffe4cf","#e8a06a",/국밥|감자탕|순대|부대|찌개|묵밥|옹심이|육면|해장/],
+  ["돈까스","🍤","#fff0c9","#f0c060",/돈까스|카츠/],
+  ["일식","🍣","#dfeeff","#8fbaf0",/스시|초밥|우동|라멘|쇼쿠|후라토/],
+  ["국수","🍜","#d9f3ee","#7fd0c0",/국수|칼국수|막국수|메밀|냉면/],
+  ["분식","🍢","#ffdcea","#f59ac0",/분식|떡볶이|토스트|김밥/],
+  ["밥·도시락","🍱","#e2f4d9","#9ccf7e",/도시락|덮밥|핵밥|쌈밥|학생식당|교직원식당/],
+  ["파스타","🍝","#ffe8d6","#f2a77a",/투파인드피터|파스타/],
+  ["카레","🍛","#fff1c4","#e9b84a",/심향|카레/]];
+function placeArt(p){var n=p.name||"";for(var i=0;i<PA_TYPES.length;i++)if(PA_TYPES[i][4].test(n))return {label:PA_TYPES[i][0],e:PA_TYPES[i][1],c1:PA_TYPES[i][2],c2:PA_TYPES[i][3]};return {label:"식당",e:"🍽️",c1:"#e6e9f2",c2:"#b5bdd3"}}
+function paStyle(node,a){node.style.setProperty("--pa1",a.c1);node.style.setProperty("--pa2",a.c2)}
+function placeArtNode(p){var a=placeArt(p),d=el("div",{cls:"pa",role:"img","aria-label":a.label+" 그림"},[el("span",{cls:"pa-e","aria-hidden":"true",text:a.e}),el("span",{cls:"pa-l",text:a.label})]);paStyle(d,a);return d}
+var _placeCardPA=placeCard;placeCard=function(p){var n=_placeCardPA.apply(this,arguments);var ph=n.querySelector(".ph");if(ph)ph.replaceWith(placeArtNode(p));return n};
+var _placeRowPA=placeRow;placeRow=function(p){var n=_placeRowPA.apply(this,arguments);var pic=n.querySelector(".pic");if(pic){var a=placeArt(p);pic.classList.add("art");pic.dataset.e=a.e;paStyle(pic,a)}return n};
+var _fmCardPA=fmCardNode;fmCardNode=function(p){var n=_fmCardPA.apply(this,arguments);var av=n.querySelector(".fm-av");if(av){var a=placeArt(p);av.classList.add("art");av.dataset.e=a.e;paStyle(av,a)}return n};
+renderFood();
+
+/* ---------- 건물별 층 안내 ---------- */
+renderBuild=function(){var bc=$("#bChips");if(!bc)return;bc.textContent="";
+  BUILD.filter(function(x){return tipsIn(x[0]).length}).forEach(function(x){var b=el("button",{type:"button","aria-pressed":String(bSel===x[0]),text:x[0]+" "+tipsIn(x[0]).length});b.onclick=function(){bSel=x[0];fSel=null;store("bSel",bSel);renderBuild()};bc.appendChild(b)});
+  var list=tipsIn(bSel),floors=Array.from(new Set(list.map(floorOf))).sort(function(a,b){if(a==="층 정보 없음")return 1;if(b==="층 정보 없음")return -1;return a<b?-1:1});
+  if(!fSel||floors.indexOf(fSel)<0)fSel=floors.filter(function(f){return f!=="층 정보 없음"})[0]||floors[0];
+  var wrap=$(".floorwrap");var head=$(".bf-head",wrap);if(!head){head=el("div",{cls:"bf-head"});wrap.insertBefore(head,wrap.firstChild)}
+  head.innerHTML='<span class="bf-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V5l8-2v18M12 9h8v12M7 8h2M7 12h2M7 16h2M15 13h2M15 17h2M3 21h18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></span>';
+  head.appendChild(el("div",{},[el("b",{text:bSel}),el("small",{text:"꿀팁 "+list.length+"개 · "+floors.filter(function(f){return f!=="층 정보 없음"}).length+"개 층"})]));
+  var fl=$("#floors");fl.textContent="";floors.forEach(function(f){var b=el("button",{type:"button","aria-pressed":String(fSel===f),"aria-label":f==="층 정보 없음"?"층 정보 없음":f.replace("F","층"),text:f==="층 정보 없음"?"?":f});b.title=f;b.onclick=function(){fSel=f;renderBuild()};fl.appendChild(b)});
+  var out=$("#floorList");out.textContent="";var rows=list.filter(function(t){return floorOf(t)===fSel}).sort(function(a,b){return b.rec-a.rec});
+  out.appendChild(el("div",{cls:"fl-h"},[el("span",{text:fSel==="층 정보 없음"?"층 정보 없음":fSel.replace("F","층")}),el("small",{text:rows.length+"개"})]));
+  var PIN='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6-5.6-6-11a6 6 0 0 1 12 0c0 5.4-6 11-6 11z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.3" fill="none" stroke="currentColor" stroke-width="2"/></svg>';
+  function draw(all){$$(".fl-row,.fl-more",out).forEach(function(n){n.remove()});(all?rows:rows.slice(0,5)).forEach(function(t){var pin=el("span",{cls:"fl-pin"});pin.innerHTML=PIN;
+      var r=el("button",{cls:"fl-row",type:"button"},[pin,el("span",{cls:"fl-nm",text:t.name}),el("span",{cls:"fl-rec"+(t.rec>=3?" top":""),text:"추천 "+t.rec})]);r.onclick=function(){tipPop(r,t)};out.appendChild(r)});
+    if(!all&&rows.length>5){var m=el("button",{cls:"fl-more",type:"button",text:"+"+(rows.length-5)+"개 더 보기"});m.onclick=function(){draw(true)};out.appendChild(m)}}
+  draw(false)};
+renderBuild();
 /* ---------- connect db ---------- */
 function setFormsEnabled(on){$$("#asForm button,#tipForm button,#dlForm button,#plForm button,#alForm button,#lvForm button[type=submit]").forEach(function(b){b.disabled=!on})}
 setFormsEnabled(false);
