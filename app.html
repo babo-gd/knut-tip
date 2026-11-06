@@ -1524,6 +1524,16 @@ section.panel[data-tab="home"] .scr-hero{padding-bottom:46px!important}
 .fl-rec.top{color:#fff;background:var(--fc)}
 .fl-more{display:block;width:100%;margin-top:6px;min-height:44px;border:0;border-radius:14px;background:var(--fill);font:inherit;font-size:14px;font-weight:800;color:var(--t2);cursor:pointer}
 
+
+/* ===== floor guide: essentials only ===== */
+.floorlist .fl-pin{display:none!important}
+.floorlist .fl-row{padding:11px 2px!important}
+.fl-rest{margin:8px 2px 0;font-size:12.5px;line-height:1.5;color:var(--t3)}
+
+
+/* ===== detail pop-ups: no open/close motion ===== */
+.pop-bg{animation:none!important}
+
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 
@@ -3546,11 +3556,18 @@ renderBuild=function(){var bc=$("#bChips");if(!bc)return;bc.textContent="";
   var out=$("#floorList");out.textContent="";var rows=list.filter(function(t){return floorOf(t)===fSel}).sort(function(a,b){return b.rec-a.rec});
   out.appendChild(el("div",{cls:"fl-h"},[el("span",{text:fSel==="층 정보 없음"?"층 정보 없음":fSel.replace("F","층")}),el("small",{text:rows.length+"개"})]));
   var PIN='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6-5.6-6-11a6 6 0 0 1 12 0c0 5.4-6 11-6 11z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.3" fill="none" stroke="currentColor" stroke-width="2"/></svg>';
-  function draw(all){$$(".fl-row,.fl-more",out).forEach(function(n){n.remove()});(all?rows:rows.slice(0,5)).forEach(function(t){var pin=el("span",{cls:"fl-pin"});pin.innerHTML=PIN;
+  var keep=rows.filter(function(t){return t.rec>=2}).slice(0,5);if(!keep.length)keep=rows.slice(0,3);var rest=rows.length-keep.length;
+  out.firstChild.lastChild.textContent=rest?"추천 많은 "+keep.length+"개":keep.length+"개";
+  function draw(){$$(".fl-row,.fl-more,.fl-rest",out).forEach(function(n){n.remove()});keep.forEach(function(t){var pin=el("span",{cls:"fl-pin"});pin.innerHTML=PIN;
       var r=el("button",{cls:"fl-row",type:"button"},[pin,el("span",{cls:"fl-nm",text:t.name}),el("span",{cls:"fl-rec"+(t.rec>=3?" top":""),text:"추천 "+t.rec})]);r.onclick=function(){tipPop(r,t)};out.appendChild(r)});
-    if(!all&&rows.length>5){var m=el("button",{cls:"fl-more",type:"button",text:"+"+(rows.length-5)+"개 더 보기"});m.onclick=function(){draw(true)};out.appendChild(m)}}
-  draw(false)};
+    if(rest)out.appendChild(el("p",{cls:"fl-rest",text:"추천이 적은 "+rest+"개는 '학생들이 모은 학교생활 꿀팁'에 있어요."}))}
+  draw()};
 renderBuild();
+
+/* ---------- detail pop-ups: no open/close motion ---------- */
+function popStill(){$$(".pop-bg,.pop").forEach(function(n){if(n.getAnimations)n.getAnimations().forEach(function(a){a.finish()})})}
+var _openPopStill=openPop;openPop=function(){var r=_openPopStill.apply(this,arguments);popStill();return r};
+var _closePopStill=closePop;closePop=function(){var r=_closePopStill.apply(this,arguments);popStill();return r};
 /* ---------- connect db ---------- */
 function setFormsEnabled(on){$$("#asForm button,#tipForm button,#dlForm button,#plForm button,#alForm button,#lvForm button[type=submit]").forEach(function(b){b.disabled=!on})}
 setFormsEnabled(false);
